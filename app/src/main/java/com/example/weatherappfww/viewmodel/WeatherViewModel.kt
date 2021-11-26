@@ -23,14 +23,32 @@ class WeatherViewModel(app: Application, val weatherRepo: WeatherRepository) : A
     var weatherDataResponse: WeatherData? = null
 
     val forecastData: MutableLiveData<Resources<ForecastModels>> = MutableLiveData()
-    val forecastDataResponse: ForecastModels? = null
+    var forecastDataResponse: ForecastModels? = null
 
+    fun getForecastData(cityName: String) = viewModelScope.launch {
+        searchForecast(cityName)
+    }
 
     fun getWeatherData(cityName: String) = viewModelScope.launch {
         searchWeather(cityName)
     }
 
-
+    private suspend fun searchForecast(cityName: String) {
+        forecastData.postValue(Resources.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = weatherRepo.getCityForecast(cityName)
+                forecastData.postValue(handleSearchingForecast(response))
+            } else {
+                forecastData.postValue(Resources.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when(t) {
+                is IOException -> weatherData.postValue(Resources.Error("Network Failure"))
+                else -> weatherData.postValue(Resources.Error("Conversion error"))
+            }
+        }
+    }
 
     private suspend fun searchWeather(cityName: String) {
         weatherData.postValue(Resources.Loading())
@@ -48,7 +66,17 @@ class WeatherViewModel(app: Application, val weatherRepo: WeatherRepository) : A
             }
         }
     }
-    
+
+    private fun handleSearchingForecast(response: Response<ForecastModels>): Resources<ForecastModels> {
+        if (response.isSuccessful) {
+            response.body()?.let { forecastResponse ->
+                forecastDataResponse = forecastResponse
+                return Resources.Success(forecastDataResponse ?: forecastResponse)
+            }
+        }
+        return Resources.Error(response.message())
+    }
+
     private fun handleSearchingWeather(response: Response<WeatherData>): Resources<WeatherData> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->

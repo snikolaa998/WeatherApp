@@ -2,6 +2,7 @@ package com.example.weatherappfww.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherappfww.R
 import com.example.weatherappfww.repository.WeatherRepository
@@ -40,8 +41,34 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.forecastData.observe(this) { response ->
+            when(response) {
+                is Resources.Success -> {
+                    response.data?.let { forecastData ->
+                        Log.d("MainActivityState", forecastData.list[0].main.temp.toString())
+                        Log.d("MainActivityState", forecastData.list[8].main.temp.toString())
+                        Log.d("MainActivityState", forecastData.list[16].main.temp.toString())
+                        Log.d("MainActivityState", forecastData.list[24].main.temp.toString())
+                        Log.d("MainActivityState", forecastData.list[32].main.temp.toString())
+                    }
+                }
+                is Resources.Error -> {
+                    response.message?.let { message ->
+                        Log.d("MainActivityState", "Error")
+                    }
+                }
+                is Resources.Loading -> {
+                    Log.d("MainActivityState", "Loading")
+                }
+            }
+        }
+
         btn_get_temp.setOnClickListener {
             viewModel.getWeatherData("Belgrade")
+        }
+
+        btn_get_forecast.setOnClickListener {
+            viewModel.getForecastData("Belgrade")
         }
     }
 }

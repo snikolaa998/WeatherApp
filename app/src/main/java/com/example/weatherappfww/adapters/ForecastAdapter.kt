@@ -1,5 +1,6 @@
 package com.example.weatherappfww.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,11 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>
         holder.itemView.apply {
             item_temp_max.text = forecast.maxTemp.toString()
             item_temp_min.text = forecast.minTemp.toString()
+            if (position % 2 == 0) {
+                item_img.setImageResource(R.drawable.cloudy)
+            } else {
+                item_img.setImageResource(R.drawable.sun)
+            }
         }
     }
 

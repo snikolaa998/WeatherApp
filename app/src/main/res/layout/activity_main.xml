@@ -8,6 +8,16 @@
     android:padding="16dp"
     tools:context=".activities.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <EditText
         android:id="@+id/et_current_city"
         android:layout_width="match_parent"
@@ -60,7 +70,7 @@
         android:id="@+id/tv_current_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="30"
+        tools:text="30"
         android:textColor="@color/background_color"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@id/temp_view"
@@ -70,10 +80,12 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <TextView
+        android:id="@+id/tv_celsius"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="35sp"
         android:text="\u00B0"
+        android:visibility="gone"
         android:textColor="@color/background_color"
         app:layout_constraintTop_toTopOf="@id/tv_current_temp"
         app:layout_constraintStart_toEndOf="@id/tv_current_temp"/>
